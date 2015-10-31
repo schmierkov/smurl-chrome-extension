@@ -11,11 +11,8 @@ window.copyToClipboard = function(text){
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-  var smurlButton = document.getElementById('smurl');
-  var smurledButton = $('#smurled');
-  smurledButton.hide();
-
-  smurlButton.addEventListener('click', function() {
+  $('#smurled').hide();
+  $(document).ready(function() {
     chrome.tabs.query({active: true}, function(tab) {
       $.ajax({
         url: 'http://smurl.schmierkov.de/links',
@@ -27,11 +24,10 @@ document.addEventListener('DOMContentLoaded', function() {
         statusCode: {
           201: function(xhr) {
             copyToClipboard(xhr.token_url);
-            $('#smurl').hide();
             $('#smurled').show();
           }
         }
       });
     });
-  }, false);
+  });
 }, false);

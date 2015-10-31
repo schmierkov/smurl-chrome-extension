@@ -1,7 +1,21 @@
-document.addEventListener('DOMContentLoaded', function() {
-  var checkPageButton = document.getElementById('checkPage');
+window.copyToClipboard = function(text){
+  var copyDiv = document.createElement('div');
+  copyDiv.contentEditable = true;
+  document.body.appendChild(copyDiv);
+  copyDiv.innerHTML = text;
+  copyDiv.unselectable = "off";
+  copyDiv.focus();
+  document.execCommand('SelectAll');
+  document.execCommand("Copy", false, null);
+  document.body.removeChild(copyDiv);
+}
 
-  checkPageButton.addEventListener('click', function() {
+document.addEventListener('DOMContentLoaded', function() {
+  var smurlButton = document.getElementById('smurl');
+  var smurledButton = $('#smurled');
+  smurledButton.hide();
+
+  smurlButton.addEventListener('click', function() {
     chrome.tabs.query({active: true}, function(tab) {
       $.ajax({
         url: 'http://smurl.schmierkov.de/links',
@@ -12,10 +26,9 @@ document.addEventListener('DOMContentLoaded', function() {
         },
         statusCode: {
           201: function(xhr) {
-            console.log(xhr.token_url);
-          },
-          422: function(xhr) {
-            console.log(xhr.responseJSON.error);
+            copyToClipboard(xhr.token_url);
+            $('#smurl').hide();
+            $('#smurled').show();
           }
         }
       });
